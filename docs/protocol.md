@@ -31,7 +31,7 @@ Where the specification permits implementation variation, this backend chooses:
   `Sec-Fetch-Site` values when no `Origin` is present.
 - Linux runs in Apple's container runtime rather than an x86 emulator.
 - Docker is a possible future backend, not an accepted backend in this version.
-- The container starts with `--network none`. Optional `--proxy-config` enables
+- The container starts with `--network none`. Optional `--proxy` or `--proxy-config` enables
   HTTP(S) egress through the command pipe to a host Python proxy, using the
   shared allow-list/credential configuration schema. See [proxy details](proxy.md).
 - Filesystem ownership, permissions, links, and metadata follow Apple's shared

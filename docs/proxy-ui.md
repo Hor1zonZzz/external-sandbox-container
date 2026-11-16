@@ -1,6 +1,7 @@
 # Local proxy management
 
-When the server has a managed proxy, open
+When the server has a managed proxy (started with `--proxy` or
+`--proxy-config`), open
 `http://127.0.0.1:8687/proxy` in your browser. Use the configured API port if you
 changed it. The page is served by the existing local HTTP server and does not
 load scripts, styles, fonts, or other resources from the Internet.

@@ -11,7 +11,7 @@ from aiohttp import web
 from .api import create_app
 from .backend import AppleContainerBackend, parse_mounts
 from .images import MINIMAL_IMAGE, ensure_tools_image
-from .proxy import HostProxy, load_policy
+from .proxy import HostProxy, ProxyPolicy, load_policy
 
 
 class MountAction(argparse.Action):
@@ -35,6 +35,8 @@ def parser():
     result.add_argument("--mount", "--mount-ro", "--mount-rw", dest="mounts", action=MountAction,
                         metavar="[NAME=]PATH", help="Share a host directory; --mount is read-write")
     result.add_argument("--preserve-paths", action="store_true", help="Also mount host directories at their original absolute paths")
+    result.add_argument("--proxy", action="store_true",
+                        help="Enable host-enforced HTTP(S) egress with every destination denied; add allow rules on the /proxy page")
     result.add_argument("--proxy-config", metavar="PATH", help="Enable host-enforced HTTP(S) egress using this allow-list JSON file")
     result.add_argument("--write-setup", metavar="DIR", help="Write the bundled image recipe and proxy policy, then exit")
     return result
@@ -44,13 +46,22 @@ async def select_image(args):
     return args.image or await ensure_tools_image(args.container_bin)
 
 
+def startup_proxy(args):
+    """The policy file when given, a deny-all policy for a bare --proxy, otherwise no proxy."""
+    if args.proxy_config:
+        return HostProxy(load_policy(args.proxy_config))
+    if args.proxy:
+        return HostProxy(ProxyPolicy.from_config({"allow": []}))
+    return None
+
+
 async def serve(args):
     if not 0 <= args.port <= 65535:
         raise ValueError("Port must be between 0 and 65535")
     if not 1 <= args.cpus <= 64 or not 128 <= args.memory <= 65536:
         raise ValueError("CPUs must be 1–64 and memory 128–65536 MiB")
     mounts = parse_mounts([*(args.mounts or []), *((path, "rw") for path in args.paths)], args.preserve_paths)
-    proxy = HostProxy(load_policy(args.proxy_config)) if args.proxy_config else None
+    proxy = startup_proxy(args)
     backend = AppleContainerBackend(mounts, image=args.image, container_bin=args.container_bin,
                                     cpus=args.cpus, memory=args.memory, proxy=proxy)
     runner = None

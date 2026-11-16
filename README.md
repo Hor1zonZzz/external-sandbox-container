@@ -110,6 +110,13 @@ This policy permits GET/HEAD requests to `https://example.com` only. Open
 Changes in the UI apply to the running server; save your JSON separately to
 reuse it after restarting. See [proxy setup and security](https://github.com/prime-radiant-inc/external-sandbox-container/blob/main/docs/proxy.md).
 
+To start with every destination denied and add allow rules from the `/proxy`
+page as you need them, pass `--proxy` in place of a policy file:
+
+```sh
+uvx external-sandbox-container --proxy
+```
+
 Commands receive ordinary proxy environment variables and a public CA
 certificate. A small guest listener relays traffic over the existing command
 pipe to the proxy in the host Python process. The container still uses

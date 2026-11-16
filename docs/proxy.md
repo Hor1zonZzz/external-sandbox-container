@@ -27,8 +27,20 @@ JSON
 
 Open `http://127.0.0.1:8687/proxy` to edit the JSON policy and view recent allowed
 and blocked requests. UI edits are runtime-only. Copy the edited configuration
-into your own file to keep it across restarts. The proxy denies all destinations
-with an empty `allow` list; omitting `--proxy-config` disables the relay entirely.
+into your own file to keep it across restarts.
+
+To begin with nothing allowed and build the policy on that page, start the
+server with `--proxy` in place of a policy file:
+
+```sh
+uv run external-sandbox-container --proxy
+```
+
+`--proxy` starts the proxy with the policy `{"allow": []}`, which denies all
+destinations. When both options are given, the file supplies the policy.
+`guestEnv` cannot be changed on the page, so placeholder variables for
+credential rules need a policy file. With neither `--proxy` nor
+`--proxy-config`, the relay is disabled entirely and `/proxy` is not served.
 
 The policy is validated before the container starts. The host proxy starts
 first; the guest listener and CA bundle are ready before the execution API

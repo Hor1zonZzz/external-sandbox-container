@@ -66,6 +66,7 @@ python3 -c 'import urllib.request; print(urllib.request.urlopen("https://example
 Changing the URL to `https://example.org` demonstrates a denied destination.
 Open `/proxy` to inspect activity or change the allow-list. Changes apply to
 the same container used by this terminal and the command-line/agent clients.
+A server started with `--proxy` denies both URLs until you add a rule there.
 The container still has no external network interface; `ls /sys/class/net`
 shows its loopback interface. See [proxy details](proxy.md).
 
