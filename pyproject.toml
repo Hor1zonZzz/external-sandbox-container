@@ -25,6 +25,7 @@ dependencies = [
     "aiohttp>=3.12,<4",
     "cryptography>=45,<48",
     "h11>=0.16,<1",
+    "truststore>=0.10,<1",
 ]
 
 [project.urls]

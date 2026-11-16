@@ -52,7 +52,9 @@ IPv4-mapped IPv6 addresses use the IPv4 policy.
 The host resolves DNS after request authorization, selects an allowed numeric
 address, and pins that address for the connection. DNS is not consulted again
 by the upstream HTTP connector. HTTPS still verifies the original hostname and
-certificate chain. Redirects are returned to the client rather than followed;
+certificate chain. The chain is checked against the host operating system's
+trust store, so the proxy accepts the same upstream certificates as browsers
+and curl on the host. Redirects are returned to the client rather than followed;
 each subsequent request passes through policy independently.
 
 Credentials can be attached only to HTTPS rules. The entire incoming credential

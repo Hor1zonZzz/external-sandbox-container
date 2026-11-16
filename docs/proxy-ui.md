@@ -34,6 +34,13 @@ bounded list of sanitized events. Activity shows request metadata and decisions;
 it excludes authentication headers, request/response bodies, and real keys.
 The list refreshes every three seconds without overwriting edits in progress.
 
+Each event has a decision (`allowed`, `denied`, or `error`), the HTTP status,
+and a reason. A request whose client closed the connection before reading the
+whole response is `allowed` with the upstream's status and the reason
+`client_disconnected`. An upstream certificate that the host does not trust, or
+that does not match the hostname, is an `error` with the reason
+`upstream_certificate_not_verified`.
+
 ## Local access boundary
 
 This is a management interface for trusted local users, not a remotely exposed
